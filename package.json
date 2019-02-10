@@ -1,0 +1,20 @@
+{
+  "name": "sqlchron",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "crontab": "1.2.0",
+    "express": "4.16.4",
+    "json2csv": "4.3.3",
+    "lodash": "4.17.11",
+    "node-cron": "2.0.3",
+    "nodemailer": "5.1.1",
+    "promise-mysql": "3.3.1"
+  }
+}
