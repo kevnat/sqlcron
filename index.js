@@ -27,7 +27,7 @@ cron.schedule("* * * * *", function(){
             //convert result json into csv using opts declared above
             try {
                 const csv = json2csv(result, opts);
-                console.log(csv);
+                // console.log(csv);
                 return csv;
             } catch (err) {
                 console.error(err);
@@ -35,14 +35,16 @@ cron.schedule("* * * * *", function(){
         }).then(function(csv){
             //write csv results file in /tmp dir
             let now = new Date(); 
-            let label = JSON.stringify(now);
+            let label = "cc_loi_" + JSON.stringify(now).replace(/['"]+/g, '') + ".csv";
             console.log(label);
-            fs.writeFile("/tmp/cc_loi_" + label.replace(/['"]+/g, '') + ".csv", csv, function(err) {
+            fs.writeFile("/tmp/" + label, csv, function(err) {
                 if(err) {
                     return console.log(err);
-                } console.log("The file was saved in /tmp");
+                } console.log(label + " was saved in /tmp");
             })
-        }).then(function(file){
+            return label;
+        }).then(function(label){
+            console.log("within nodemailer"+label);
             //send email with file
             let transporter = nodemailer.createTransport({
                 service: 'gmail',
@@ -54,8 +56,12 @@ cron.schedule("* * * * *", function(){
             const mailOptions = {
                 from: 'sqlcrontest@gmail.com', // sender address
                 to: 'kevmaxnathan@gmail.com', // list of receivers
-                subject: 'Nodemailer Test', // Subject line
-                html: '<p>Your html here</p>'// plain text body
+                subject: 'Nodemailer Test 2', // Subject line
+                html: '<p>See attached csv</p>',// plain text body
+                attachments: [{
+                    filename: label,
+                    path: "/tmp/" + label 
+                }]
               };
               transporter.sendMail(mailOptions, function (err, info) {
                 if(err)
@@ -66,9 +72,9 @@ cron.schedule("* * * * *", function(){
         }).catch(function(error){
             //write any errors to log file in /log directory
             let now = new Date(); 
-            let label = JSON.stringify(now);
+            let label = JSON.stringify(now).replace(/['"]+/g, '');
             console.log(label);
-            fs.writeFile("/tmp/log_" + label.replace(/['"]+/g, '') + ".csv", error, function(err) {
+            fs.writeFile("/tmp/log_" + label + ".txt", error, function(err) {
                 if(err) {
                     return console.log(err);
                 } console.log("The file was saved in /tmp/log");
