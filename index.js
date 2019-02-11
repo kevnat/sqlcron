@@ -5,7 +5,7 @@ const fields = ['merchid','merchid2','cardproc','name1','name2','street','city',
 const opts = { fields };
 const cron = require('node-cron');
 const express = require('express');
-// let nodemailer = required('nodemailer');
+const nodemailer = require('nodemailer');
 
 app = express();
 
@@ -19,10 +19,12 @@ cron.schedule("* * * * *", function(){
             password: 'root',
             database: 'gateway'
         }).then(function(conn){
+            //query the database
             let result = conn.query('select * from merchants');
             conn.end();
             return result;
         }).then(function(result){
+            //convert result json into csv using opts declared above
             try {
                 const csv = json2csv(result, opts);
                 console.log(csv);
@@ -31,6 +33,7 @@ cron.schedule("* * * * *", function(){
                 console.error(err);
             }
         }).then(function(csv){
+            //write csv results file in /tmp dir
             let now = new Date(); 
             let label = JSON.stringify(now);
             console.log(label);
@@ -39,7 +42,29 @@ cron.schedule("* * * * *", function(){
                     return console.log(err);
                 } console.log("The file was saved in /tmp");
             })
+        }).then(function(file){
+            //send email with file
+            let transporter = nodemailer.createTransport({
+                service: 'gmail',
+                auth: {
+                    user: 'sqlcrontest@gmail.com',
+                    pass: 'newthing123'
+                }
+            })
+            const mailOptions = {
+                from: 'sqlcrontest@gmail.com', // sender address
+                to: 'kevmaxnathan@gmail.com', // list of receivers
+                subject: 'Nodemailer Test', // Subject line
+                html: '<p>Your html here</p>'// plain text body
+              };
+              transporter.sendMail(mailOptions, function (err, info) {
+                if(err)
+                  console.log(err)
+                else
+                  console.log(info);
+             });
         }).catch(function(error){
+            //write any errors to log file in /log directory
             let now = new Date(); 
             let label = JSON.stringify(now);
             console.log(label);
