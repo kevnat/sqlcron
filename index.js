@@ -9,10 +9,13 @@ const nodemailer = require('nodemailer');
 
 app = express();
 
+//setup to run every minute
 cron.schedule("* * * * *", function(){
     console.log("------------------");
-    console.log("Running Cron Job");
+    console.log("Running Job");
     try {
+        //try to create the db connection
+        //to do: modify for use with oracle-node and insert query
         mysql.createConnection({
             host: 'localhost',
             user: 'root',
