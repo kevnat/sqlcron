@@ -36,7 +36,6 @@ cron.schedule("* * * * *", function(){
             //write csv results file in /tmp dir
             let now = new Date(); 
             let label = "cc_loi_" + JSON.stringify(now).replace(/['"]+/g, '') + ".csv";
-            console.log(label);
             fs.writeFile("/tmp/" + label, csv, function(err) {
                 if(err) {
                     return console.log(err);
@@ -44,7 +43,6 @@ cron.schedule("* * * * *", function(){
             })
             return label;
         }).then(function(label){
-            console.log("within nodemailer"+label);
             //send email with file
             let transporter = nodemailer.createTransport({
                 service: 'gmail',
@@ -72,14 +70,13 @@ cron.schedule("* * * * *", function(){
         }).catch(function(error){
             //write any errors to log file in /log directory
             let now = new Date(); 
-            let label = JSON.stringify(now).replace(/['"]+/g, '');
+            let logLabel = "log_" + JSON.stringify(now).replace(/['"]+/g, '') + ".txt";
             console.log(label);
-            fs.writeFile("/tmp/log_" + label + ".txt", error, function(err) {
+            fs.writeFile("/tmp/log" + logLabel , error, function(err) {
                 if(err) {
                     return console.log(err);
-                } console.log("The file was saved in /tmp/log");
+                } console.log(logLabel + "was saved in /tmp/log");
             })
-            console.log("in logger");
         })
     } catch (error){ 
         console.log(error);
