@@ -1,4 +1,4 @@
-# Node SQL Chron Automation
+# Node SQL Chron Job
 - Used to schedule routine SQL queries and export results to csv file.
 - Implementation of nodemailer about half-way. 
 
