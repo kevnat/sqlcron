@@ -13,7 +13,7 @@
     "crontab": "1.2.0",
     "express": "4.16.4",
     "json2csv": "4.3.3",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.19",
     "node-cron": "2.0.3",
     "nodemailer": "5.1.1",
     "oracledb": "^3.1.1",
